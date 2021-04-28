@@ -239,17 +239,17 @@ MmioReadBytes (
   UINT8 *Ptr;
   UINT8 *End;
 
-#ifdef MDE_CPU_AARCH64
+//#if defined (MDE_CPU_AARCH64) || defined (BROTLI_TARGET_RISCV64)
   Left = Size & 7;
-#else
-  Left = Size & 3;
-#endif
+//#else
+  //Left = Size & 3;
+//#endif
 
   Size -= Left;
   Ptr = Buffer;
   End = Ptr + Size;
 
-#ifdef MDE_CPU_AARCH64
+//#if defined (MDE_CPU_AARCH64) || defined (BROTLI_TARGET_RISCV64)
   while (Ptr < End) {
     *(UINT64 *)Ptr = MmioRead64 (mFwCfgDataAddress);
     Ptr += 8;
@@ -258,12 +258,12 @@ MmioReadBytes (
     *(UINT32 *)Ptr = MmioRead32 (mFwCfgDataAddress);
     Ptr += 4;
   }
-#else
-  while (Ptr < End) {
-    *(UINT32 *)Ptr = MmioRead32 (mFwCfgDataAddress);
-    Ptr += 4;
-  }
-#endif
+//#else
+ // while (Ptr < End) {
+   // *(UINT32 *)Ptr = MmioRead32 (mFwCfgDataAddress);
+    //Ptr += 4;
+//  }
+//#endif
 
   if (Left & 2) {
     *(UINT16 *)Ptr = MmioRead16 (mFwCfgDataAddress);
@@ -322,11 +322,11 @@ DmaTransferBytes (
   //
   // This will fire off the transfer.
   //
-#ifdef MDE_CPU_AARCH64
+//#if defined (MDE_CPU_AARCH64) || defined (BROTLI_TARGET_RISCV64)
   MmioWrite64 (mFwCfgDmaAddress, SwapBytes64 ((UINT64)&Access));
-#else
-  MmioWrite32 ((UINT32)(mFwCfgDmaAddress + 4), SwapBytes32 ((UINT32)&Access));
-#endif
+//#else
+  //MmioWrite32 ((UINT32)(mFwCfgDmaAddress + 4), SwapBytes32 ((UINT32)&Access));
+//#endif
 
   //
   // We shouldn't look at Access.Control before starting the transfer.
